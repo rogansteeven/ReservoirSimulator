@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 
+enum Props
+{
+	Bo = 0, Viso, Rs, Bw, Visw
+};
+
 struct PVTO
 {
 	float Rs, Po, Bo, Viso;
