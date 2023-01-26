@@ -1,4 +1,5 @@
 #include "Reader.hpp"
+#include <iostream>
 
 std::string Reader::ReadLine()
 {
@@ -30,17 +31,14 @@ void Reader::Reset()
 	file.seekg(0);
 }
 
-void Reader::Skip(char skipChar)
+void Reader::SkipLeading(char skipChar)
 {
-	std::string line;
-	std::streampos previous = file.tellg();
-
-	while (line.at(0) == skipChar)
+	std::streampos prev = file.tellg();
+	while (ReadLine().at(0) == skipChar)
 	{
-		getline(file, line);
-		previous = file.tellg();
+		prev = file.tellg();
 	}
-	file.seekg(previous);
+	file.seekg(prev);
 }
 
 std::ifstream& Reader::GetFile()

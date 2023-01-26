@@ -1,14 +1,21 @@
 #pragma once
-#include "../Data/Properties.hpp"
+#include "PVT.hpp"
 #include <vector>
 
 class PVTCalc
 {
 public:
-	static void Init(PVT* _pvt);
+	static void Init(const std::string& filepath);
 
 	static float Calc(Props props, float p);
 	static float CalcDeriv(Props props, float p);
+
+	static float CalcRhoo(float p);
+	static float CalcRhog(float p);
+	static float CalcRhow(float p);
+	static float CalcPhi(float p);
+
+	static const Data GetData() { return pvt->GetData(); }
 
 private:
 	struct Pair
@@ -19,6 +26,6 @@ private:
 	static Pair SelectProps(Props props);
 
 private:
-	static PVT* pvt;
+	static std::unique_ptr<PVT> pvt;
 	static const float eps;
 };

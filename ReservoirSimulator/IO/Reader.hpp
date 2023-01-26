@@ -10,11 +10,14 @@ public:
 
 	std::string ReadLine();
 	std::string ReadLine(int n, bool reset = true);
-
+	
 	void Reset();
-	void Skip(char skipChar);
+	void SkipLeading(char skipChar);
 
 	std::ifstream& GetFile();
+
+public:
+	void Clear() { file.clear(); }
 
 private:
 	std::ifstream file;

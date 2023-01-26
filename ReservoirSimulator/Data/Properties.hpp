@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
-enum Props
+enum class Props
 {
-	Bo = 0, Viso, Rs, Bw, Visw
+	Bo = 0, Viso, Rs, Bw, Visw, Rhoo, Rhog, Rhow, Phi, Bg
 };
 
 struct Density // [lb/cuft]
@@ -51,11 +51,13 @@ struct Reservoir
 	float permx, permy, permz; // Permeability [mD]
 };
 
-struct PVTData
+struct Data
 {
 	Reservoir reservoir;
-	std::vector<PVTO> oil;
-	std::vector<PVTW> water;
-	std::vector<PVTG> gas;
+	Density density;
+
+	std::vector<PVTO> pvto;
+	std::vector<PVTG> pvtg;
+	std::vector<PVTW> pvtw;
 	std::vector<RockPhysic> rockPhysic;
 };

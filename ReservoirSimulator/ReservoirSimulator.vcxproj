@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Functions\Interpolate.cpp" />
+    <ClCompile Include="Functions\PVT.cpp" />
     <ClCompile Include="Functions\PVTCalc.cpp" />
     <ClCompile Include="IO\Print.cpp" />
     <ClCompile Include="IO\PVTReader.cpp" />
@@ -141,12 +142,14 @@
   <ItemGroup>
     <ClInclude Include="Data\Properties.hpp" />
     <ClInclude Include="Functions\Interpolate.hpp" />
+    <ClInclude Include="Functions\PVT.hpp" />
     <ClInclude Include="Functions\PVTCalc.hpp" />
     <ClInclude Include="IO\Print.hpp" />
     <ClInclude Include="IO\PVTReader.hpp" />
     <ClInclude Include="IO\Reader.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Data\project2.txt" />
     <Text Include="Data\pvt.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

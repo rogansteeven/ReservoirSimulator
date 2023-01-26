@@ -9,7 +9,7 @@
 / [tx ty tz]
 / | | |
 / v v v
-4000. 4000. 135.
+4000.0 4000.0 135.0
 /
 / + initial pressure at the center of top layer (psi) [pinit]
 / | + initial water saturation [swi]
