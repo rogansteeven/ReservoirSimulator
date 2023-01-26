@@ -1,7 +1,5 @@
 #include "PVTReader.hpp"
 #include "Reader.hpp"
-#include <iostream>
-#include "Print.hpp"
 
 PVT PVTReader(const std::string& filepath)
 {
@@ -15,13 +13,6 @@ PVT PVTReader(const std::string& filepath)
 	// Read PVT Oil
 	reader.ReadLine(4, false); // Skip to the first entry of PVT Oil
 
-	float Rs, Po, Bo, Viso;
-	for (int i = 0; i < n; i++)
-	{
-		reader.GetFile() >> Rs >> Po >> Bo >> Viso;
-		pvto.push_back({ Rs, Po, Bo, Viso });
-	}
-
 	// Read PVT Water
 	reader.ReadLine(5, false); // Skip to the first entry of PVT Water
 
@@ -30,4 +21,14 @@ PVT PVTReader(const std::string& filepath)
 	pvtw.push_back({ Pref, Bwref, Cwref, Visw, Visbw });
 
 	return { pvto, pvtw };
+}
+
+std::vector<PVTO> PVTOReader(int n)
+{
+	float Rs, Po, Bo, Viso;
+	for (int i = 0; i < n; i++)
+	{
+		reader.GetFile() >> Rs >> Po >> Bo >> Viso;
+		pvto.push_back({ Rs, Po, Bo, Viso });
+	}
 }

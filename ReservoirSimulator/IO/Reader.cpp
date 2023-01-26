@@ -30,6 +30,19 @@ void Reader::Reset()
 	file.seekg(0);
 }
 
+void Reader::Skip(char skipChar)
+{
+	std::string line;
+	std::streampos previous = file.tellg();
+
+	while (line.at(0) == skipChar)
+	{
+		getline(file, line);
+		previous = file.tellg();
+	}
+	file.seekg(previous);
+}
+
 std::ifstream& Reader::GetFile()
 {
 	return file;

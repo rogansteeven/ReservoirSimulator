@@ -12,6 +12,7 @@ public:
 	std::string ReadLine(int n, bool reset = true);
 
 	void Reset();
+	void Skip(char skipChar);
 
 	std::ifstream& GetFile();
 
