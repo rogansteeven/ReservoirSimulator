@@ -37,9 +37,9 @@ std::ostream& operator<<(std::ostream& os, const Reservoir& reservoir)
 
 std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysic>& rockPhysic)
 {
-	os << "Sw" << " " << "Kw" << " " << "Ko" << " " << "Cow\n";
+	os << "Sw" << " " << "Krw" << " " << "Kro" << " " << "Pcow\n";
 	for (const auto& entry : rockPhysic)
-		os << entry.Sw << " " << entry.Kw << " " << entry.Ko << " " << entry.Cow << '\n';
+		os << entry.Sw << " " << entry.Krw << " " << entry.Kro << " " << entry.Pcow << '\n';
 	return os;
 }
 

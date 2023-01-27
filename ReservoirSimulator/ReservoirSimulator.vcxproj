@@ -135,7 +135,6 @@
     <ClCompile Include="Functions\PVT.cpp" />
     <ClCompile Include="Functions\PVTCalc.cpp" />
     <ClCompile Include="IO\Print.cpp" />
-    <ClCompile Include="IO\PVTReader.cpp" />
     <ClCompile Include="IO\Reader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -145,7 +144,6 @@
     <ClInclude Include="Functions\PVT.hpp" />
     <ClInclude Include="Functions\PVTCalc.hpp" />
     <ClInclude Include="IO\Print.hpp" />
-    <ClInclude Include="IO\PVTReader.hpp" />
     <ClInclude Include="IO\Reader.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -53,11 +53,11 @@ void PVT::ReadRockPhysics()
 	reader.ReadLine(); // Change pointer to the next line
 
 	// Get rock physics
-	float Sw, Kw, Ko, Cow;
+	float Sw, Krw, Kro, Pcow;
 	reader.SkipLeading('/');
-	while (reader.GetFile() >> Sw >> Kw >> Ko >> Cow)
+	while (reader.GetFile() >> Sw >> Krw >> Kro >> Pcow)
 	{
-		data.rockPhysic.push_back({ Sw, Kw, Ko, Cow });
+		data.rockPhysic.push_back({ Sw, Krw, Kro, Pcow });
 	}
 	reader.Clear();
 	reader.ReadLine(); // Change pointer to the next line

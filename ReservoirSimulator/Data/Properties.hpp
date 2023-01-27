@@ -3,7 +3,7 @@
 
 enum class Props
 {
-	Bo = 0, Viso, Rs, Bw, Visw, Rhoo, Rhog, Rhow, Phi, Bg
+	Bo = 0, Viso, Rs, Bw, Visw, Rhoo, Rhog, Rhow, Phi, Bg, Kro, Krw, Pcow
 };
 
 struct Density // [lb/cuft]
@@ -38,8 +38,8 @@ struct PVTW
 struct RockPhysic
 {
 	float Sw;     // Water saturation [.frac]
-	float Kw, Ko; // Rel. Perm. Water [.frac], Rel. Perm. Oil [.frac]
-	float Cow;    // Water-oil Capillary pressure [psi]
+	float Krw, Kro; // Rel. Perm. Water [.frac], Rel. Perm. Oil [.frac]
+	float Pcow;    // Water-oil Capillary pressure [psi]
 };
 
 struct Reservoir

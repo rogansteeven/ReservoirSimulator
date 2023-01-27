@@ -11,28 +11,28 @@ void PVTCalc::Init(const std::string& filepath)
 	pvt = PVT::Create(filepath);
 }
 
-float PVTCalc::Calc(Props props, float p)
+float PVTCalc::Calc(Props props, float x)
 {
 	switch (props)
 	{
 	case Props::Rhoo:
-		return CalcRhoo(p);
+		return CalcRhoo(x);
 	case Props::Rhog:
-		return CalcRhog(p);
+		return CalcRhog(x);
 	case Props::Rhow:
-		return CalcRhow(p);
+		return CalcRhow(x);
 	case Props::Phi:
-		return CalcPhi(p);
+		return CalcPhi(x);
 	}
 
 	// Props that only need interpolation
-	auto [ps, tab] = SelectProps(props);
-	return Interpolate(ps, tab, p);
+	auto [xs, tab] = SelectProps(props);
+	return Interpolate(xs, tab, x);
 }
 
-float PVTCalc::CalcDeriv(Props props, float p)
+float PVTCalc::CalcDeriv(Props props, float x)
 {
-	return (Calc(props, p) - Calc(props, p - eps)) / eps;
+	return (Calc(props, x) - Calc(props, x - eps)) / eps;
 }
 
 float PVTCalc::CalcRhoo(float p)
@@ -68,8 +68,8 @@ float PVTCalc::CalcPhi(float p)
 
 PVTCalc::Pair PVTCalc::SelectProps(Props props)
 {
-	std::vector<float> ps;
-	std::vector<float> tabprop;
+	std::vector<float> xs;
+	std::vector<float> ys;
 
 	switch (props)
 	{
@@ -77,8 +77,8 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvto)
 		{
-			ps.push_back(entry.Po);
-			tabprop.push_back(entry.Bo);
+			xs.push_back(entry.Po);
+			ys.push_back(entry.Bo);
 		}
 		break;
 	}
@@ -86,8 +86,8 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvto)
 		{
-			ps.push_back(entry.Po);
-			tabprop.push_back(entry.Viso);
+			xs.push_back(entry.Po);
+			ys.push_back(entry.Viso);
 		}
 		break;
 	}
@@ -95,8 +95,8 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvto)
 		{
-			ps.push_back(entry.Po);
-			tabprop.push_back(entry.Rs);
+			xs.push_back(entry.Po);
+			ys.push_back(entry.Rs);
 		}
 		break;
 	}
@@ -104,8 +104,8 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvtw)
 		{
-			ps.push_back(entry.Pref);
-			tabprop.push_back(entry.Bwref);
+			xs.push_back(entry.Pref);
+			ys.push_back(entry.Bwref);
 		}
 		break;
 	}
@@ -113,8 +113,8 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvtw)
 		{
-			ps.push_back(entry.Pref);
-			tabprop.push_back(entry.Visw);
+			xs.push_back(entry.Pref);
+			ys.push_back(entry.Visw);
 		}
 		break;
 	}
@@ -122,13 +122,40 @@ PVTCalc::Pair PVTCalc::SelectProps(Props props)
 	{
 		for (const auto& entry : pvt->GetData().pvtg)
 		{
-			ps.push_back(entry.Pg);
-			tabprop.push_back(entry.Bg);
+			xs.push_back(entry.Pg);
+			ys.push_back(entry.Bg);
+		}
+		break;
+	}
+	case Props::Kro:
+	{
+		for (const auto& entry : pvt->GetData().rockPhysic)
+		{
+			xs.push_back(entry.Sw);
+			ys.push_back(entry.Kro);
+		}
+		break;
+	}
+	case Props::Krw:
+	{
+		for (const auto& entry : pvt->GetData().rockPhysic)
+		{
+			xs.push_back(entry.Sw);
+			ys.push_back(entry.Krw);
+		}
+		break;
+	}
+	case Props::Pcow:
+	{
+		for (const auto& entry : pvt->GetData().rockPhysic)
+		{
+			xs.push_back(entry.Sw);
+			ys.push_back(entry.Pcow);
 		}
 		break;
 	}
 	default:
 		throw std::runtime_error("Please select appropiate props!");
 	}
-	return { ps, tabprop };
+	return { xs, ys };
 }
