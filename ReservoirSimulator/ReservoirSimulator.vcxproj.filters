@@ -24,13 +24,7 @@
     <ClCompile Include="IO\Print.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Functions\Interpolate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Functions\PVTCalc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Functions\PVT.cpp">
+    <ClCompile Include="Simulator\Data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,16 +35,10 @@
     <ClInclude Include="IO\Print.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Properties.hpp">
+    <ClInclude Include="Simulator\Data.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Functions\Interpolate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Functions\PVTCalc.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Functions\PVT.hpp">
+    <ClInclude Include="Simulator\DataType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

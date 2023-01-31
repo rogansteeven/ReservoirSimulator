@@ -2,6 +2,7 @@
 #include "Interpolate.hpp"
 #include <stdexcept>
 #include <cmath>
+#include "../Reservoir/Model.hpp"
 
 std::unique_ptr<PVT> PVTCalc::pvt = nullptr;
 const float PVTCalc::eps = 0.001f;
@@ -9,6 +10,7 @@ const float PVTCalc::eps = 0.001f;
 void PVTCalc::Init(const std::string& filepath)
 {
 	pvt = PVT::Create(filepath);
+	Model::Init(pvt->GetData());
 }
 
 float PVTCalc::Calc(Props props, float x)
@@ -27,7 +29,8 @@ float PVTCalc::Calc(Props props, float x)
 
 	// Props that only need interpolation
 	auto [xs, tab] = SelectProps(props);
-	return Interpolate(xs, tab, x);
+	auto result = Interpolate(xs, tab, x);
+	return UnitConversion(props, result);
 }
 
 float PVTCalc::CalcDeriv(Props props, float x)
@@ -64,6 +67,25 @@ float PVTCalc::CalcPhi(float p)
 	float cr = pvt->GetData().reservoir.crock;
 	float p0 = pvt->GetData().reservoir.pref;
 	return phi0 * exp(cr * (p - p0));
+}
+
+float PVTCalc::UnitConversion(Props props, float result)
+{
+	switch (props)
+	{
+	case Props::Bg:
+		return 5.6146f * result;
+	case Props::Rs:
+		return result / 5.6146f;
+	case Props::Rhoo:
+		return 6.95e-3f * result;
+	case Props::Rhog:
+		return 6.95e-3f * result;
+	case Props::Rhow:
+		return 6.95e-3f * result;
+	default:
+		return result;
+	}
 }
 
 PVTCalc::Pair PVTCalc::SelectProps(Props props)

@@ -11,37 +11,21 @@ std::string Reader::ReadLine()
 	return line;
 }
 
-std::string Reader::ReadLine(int n, bool reset)
-{
-	if (reset)
-		Reset();
-
-	std::string line;
-	if (file.is_open())
-	{
-		for (int i = 0; i < n; i++)
-			getline(file, line);
-	}
-	return line;
-}
-
 void Reader::Reset()
 {
 	file.clear();
 	file.seekg(0);
 }
 
-void Reader::SkipLeading(char skipChar)
+void Reader::SkipUntilNot(char skip)
 {
+	if (file.peek() == '\n')
+		ReadLine();
+
 	std::streampos prev = file.tellg();
-	while (ReadLine().at(0) == skipChar)
+	while (ReadLine().at(0) == skip)
 	{
 		prev = file.tellg();
 	}
 	file.seekg(prev);
-}
-
-std::ifstream& Reader::GetFile()
-{
-	return file;
 }

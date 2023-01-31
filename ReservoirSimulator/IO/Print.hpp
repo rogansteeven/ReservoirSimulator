@@ -1,16 +1,18 @@
 #pragma once
 
-#include "../Functions/PVT.hpp"
+#include "../Simulator/Data.hpp"
+#include "../Simulator/DataType.hpp"
+
 #include <iostream>
 #include <vector>
 
-std::ostream& operator<<(std::ostream& os, const Data& data);
+std::ostream& operator<<(std::ostream& os, const std::unique_ptr<Data>& data);
 
-std::ostream& operator<<(std::ostream& os, const Reservoir& reservoir);
-std::ostream& operator<<(std::ostream& os, const Density& density);
+std::ostream& operator<<(std::ostream& os, const ReservoirData& reservoir);
+std::ostream& operator<<(std::ostream& os, const DensityData& density);
 
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTO>& pvto);
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTG>& pvtg);
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTW>& pvtw);
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTOData>& pvto);
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTGData>& pvtg);
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTWData>& pvtw);
 
-std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysic>& rockphysic);
+std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysicData>& rockphysic);

@@ -1,17 +1,17 @@
 #include "Print.hpp"
 
-std::ostream& operator<<(std::ostream& os, const Data& data)
+std::ostream& operator<<(std::ostream& os, const std::unique_ptr<Data>& data)
 {
-	os << data.reservoir << '\n'
-	   << data.rockPhysic << '\n'
-	   << data.density << '\n'
-	   << data.pvto << '\n'
-	   << data.pvtg << '\n'
-	   << data.pvtw << '\n';
+	os << data->GetContent().reservoir << '\n'
+	   << data->GetContent().rockPhysic << '\n'
+	   << data->GetContent().density << '\n'
+	   << data->GetContent().pvto << '\n'
+	   << data->GetContent().pvtg << '\n'
+	   << data->GetContent().pvtw << '\n';
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Reservoir& reservoir)
+std::ostream& operator<<(std::ostream& os, const ReservoirData& reservoir)
 {
 	// Print grids
 	os << "nx" << " " << "ny" << " " << "nz\n";
@@ -23,7 +23,7 @@ std::ostream& operator<<(std::ostream& os, const Reservoir& reservoir)
 
 	// Print pressure initial and water saturation initial
 	os << "Pi" << " " << "Swi\n";
-	os << reservoir.pi << " " << reservoir.swi << "\n\n";
+	os << reservoir.pinit << " " << reservoir.swi << "\n\n";
 
 	// Print porosity, compressibility, and pressure reference
 	os << "Phi0" << " " << "Crock" << " " << "Pref\n";
@@ -35,41 +35,41 @@ std::ostream& operator<<(std::ostream& os, const Reservoir& reservoir)
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysic>& rockPhysic)
+std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysicData>& rockPhysic)
 {
 	os << "Sw" << " " << "Krw" << " " << "Kro" << " " << "Pcow\n";
 	for (const auto& entry : rockPhysic)
-		os << entry.Sw << " " << entry.Krw << " " << entry.Kro << " " << entry.Pcow << '\n';
+		os << entry.sw << " " << entry.krw << " " << entry.kro << " " << entry.pcow << '\n';
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Density& density)
+std::ostream& operator<<(std::ostream& os, const DensityData& density)
 {
-	os << "Rho_o" << " " << "Rho_g" << " " << "Rho_w\n";
+	os << "Rho Oil" << " " << "Rho Gas" << " " << "Rho Water\n";
 	os << density.oil << " " << density.gas << " " << density.water << '\n';
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTO>& pvto)
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTOData>& pvto)
 {
 	os << "Rs" << " " << "Po" << " " << "Bo" << " " << "Viso\n";
 	for (const auto& entry : pvto)
-		os << entry.Rs << " " << entry.Po << " " << entry.Bo << " " << entry.Viso << '\n';
+		os << entry.rs << " " << entry.p << " " << entry.bo << " " << entry.viso << '\n';
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTG>& pvtg)
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTGData>& pvtg)
 {
 	os << "Pg" << " " << "Bg" << " " << "Vg\n";
 	for (const auto& entry : pvtg)
-		os << entry.Pg << " " << entry.Bg << " " << entry.Vg << '\n';
+		os << entry.p << " " << entry.bg << " " << entry.visg << '\n';
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<PVTW>& pvtw)
+std::ostream& operator<<(std::ostream& os, const std::vector<PVTWData>& pvtw)
 {
 	os << "Pref" << " " << "Bwref" << " " << "Cwref" << " " << "Viscosity" << " " << "Viscobility\n";
 	for (const auto& entry : pvtw)
-		os << entry.Pref << " " << entry.Bwref << " " << entry.Cwref << " " << entry.Visw << " " << entry.Visbw << '\n';
+		os << entry.pref << " " << entry.bwref << " " << entry.cwref << " " << entry.viswref << " " << entry.viscosibility << '\n';
 	return os;
 }

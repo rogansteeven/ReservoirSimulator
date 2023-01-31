@@ -24,6 +24,7 @@ private:
 		std::vector<float> ys;
 	};
 	static Pair SelectProps(Props props);
+	static float UnitConversion(Props props, float result);
 
 private:
 	static std::unique_ptr<PVT> pvt;

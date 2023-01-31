@@ -1,11 +1,15 @@
-#include "Functions\PVT.hpp"
+#include "Simulator\Data.hpp"
 #include "IO\Print.hpp"
-#include "Functions\PVTCalc.hpp"
+
+#include <iostream>
+
+//#define PrintCalc(prop, x) std::cout << #prop << PVTCalc::Calc(Props::##prop, x) << '\n'
 
 int main()
 {
-	PVTCalc::Init("Data\\project2.txt");
+	auto data = Data::Create("Data\\project2.txt");
+	//auto model = Model::Create(data);
+	//Simulator::Init(data, model);
 
-	std::cout << PVTCalc::GetData() << std::endl;
-	std::cout << "Bo: " << PVTCalc::CalcDeriv(Props::Kro, 0.3f) << '\n';
+	std::cout << data << std::endl;
 }

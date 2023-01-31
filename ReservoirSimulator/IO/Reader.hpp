@@ -9,12 +9,17 @@ public:
 	Reader(const std::string& filepath) : file(filepath) {}
 
 	std::string ReadLine();
-	std::string ReadLine(int n, bool reset = true);
+	void SkipUntilNot(char skip);
 	
 	void Reset();
-	void SkipLeading(char skipChar);
 
-	std::ifstream& GetFile();
+public:
+	template<typename T>
+	std::ifstream& operator>>(T& val)
+	{
+		file >> val;
+		return file;
+	}
 
 public:
 	void Clear() { file.clear(); }
