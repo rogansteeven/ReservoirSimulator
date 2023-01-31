@@ -1,4 +1,5 @@
 #include "Simulator\Data.hpp"
+#include "Simulator\Simulator.hpp"
 #include "IO\Print.hpp"
 
 #include <iostream>
@@ -9,7 +10,8 @@ int main()
 {
 	auto data = Data::Create("Data\\project2.txt");
 	//auto model = Model::Create(data);
-	//Simulator::Init(data, model);
+	Simulator::Init(data);
 
 	std::cout << data << std::endl;
+	std::cout << Simulator::Calc(Props::Rs, 6000.0f) << std::endl;
 }

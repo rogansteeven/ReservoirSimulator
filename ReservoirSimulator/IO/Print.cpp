@@ -1,6 +1,6 @@
 #include "Print.hpp"
 
-std::ostream& operator<<(std::ostream& os, const std::unique_ptr<Data>& data)
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Data>& data)
 {
 	os << data->GetContent().reservoir << '\n'
 	   << data->GetContent().rockPhysic << '\n'

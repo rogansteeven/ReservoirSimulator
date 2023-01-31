@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-std::ostream& operator<<(std::ostream& os, const std::unique_ptr<Data>& data);
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Data>& data);
 
 std::ostream& operator<<(std::ostream& os, const ReservoirData& reservoir);
 std::ostream& operator<<(std::ostream& os, const DensityData& density);

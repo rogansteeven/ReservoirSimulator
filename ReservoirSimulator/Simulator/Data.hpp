@@ -26,7 +26,7 @@ public:
 
 	const Content& GetContent() const { return m_Content; }
 
-	static std::unique_ptr<Data> Create(const std::string& filepath);
+	static std::shared_ptr<Data> Create(const std::string& filepath);
 
 private:
 	void ReadInitialReservoirData();

@@ -1,9 +1,9 @@
 #include "Data.hpp"
 #include <iostream>
 
-std::unique_ptr<Data> Data::Create(const std::string& filepath)
+std::shared_ptr<Data> Data::Create(const std::string& filepath)
 {
-	return std::make_unique<Data>(filepath);
+	return std::make_shared<Data>(filepath);
 }
 
 Data::Data(const std::string& filepath)
