@@ -136,15 +136,18 @@
     <ClCompile Include="IO\Reader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Simulator\Data.cpp" />
+    <ClCompile Include="Simulator\Model.cpp" />
     <ClCompile Include="Simulator\Simulator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Functions\Interpolate.hpp" />
     <ClInclude Include="IO\Print.hpp" />
     <ClInclude Include="IO\Reader.hpp" />
+    <ClInclude Include="Simulator\Block.hpp" />
     <ClInclude Include="Simulator\Data.hpp" />
     <ClInclude Include="Simulator\DataType.hpp" />
     <ClInclude Include="Simulator\Enum.hpp" />
+    <ClInclude Include="Simulator\Model.hpp" />
     <ClInclude Include="Simulator\Simulator.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -2,8 +2,8 @@
 
 struct ReservoirData
 {
-	int nx, ny, nz;   //no of grids in x- y- and z-direction
-	float tx, ty, tz; //dimension in x- y- and z-direction (ft)
+	int nx, ny, nz;   // no of grids in x- y- and z-direction
+	float tx, ty, tz; // dimension in x- y- and z-direction (ft)
 	
 	float pinit; // initial pressure at the center of top layer (psi)
 	float swi;   // initial water saturation (.frac)

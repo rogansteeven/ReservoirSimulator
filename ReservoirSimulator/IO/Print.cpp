@@ -73,3 +73,24 @@ std::ostream& operator<<(std::ostream& os, const std::vector<PVTWData>& pvtw)
 		os << entry.pref << " " << entry.bwref << " " << entry.cwref << " " << entry.viswref << " " << entry.viscosibility << '\n';
 	return os;
 }
+
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Model>& model)
+{
+	// Print grids
+	const auto& [nx, ny, nz] = model->GetCoordinate();
+	os << "nx" << " " << "ny" << " " << "nz\n";
+	os << nx << " " << ny << " " << nz << "\n\n";
+
+	// Print dimension
+	const auto& [tx, ty, tz] = model->GetDimension();
+	os << "tx" << " " << "ty" << " " << "tz\n";
+	os << tx << " " << ty << " " << tz << "\n\n";
+
+	// Print OOIP and OGIP
+	const auto& ooip = model->GetOOIP();
+	const auto& ogip = model->GetOGIP();
+	os << "OOIP: " << ooip << '\n';
+	os << "OGIP: " << ogip << "\n\n";
+
+	return os;
+}

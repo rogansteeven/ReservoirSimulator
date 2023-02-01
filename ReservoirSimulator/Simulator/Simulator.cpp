@@ -1,16 +1,22 @@
 #include "Simulator.hpp"
 #include "../Functions/Interpolate.hpp"
+#include "Block.hpp"
 
 #include <stdexcept>
 #include <cmath>
 
 std::shared_ptr<Data> Simulator::m_Data = nullptr;
-std::shared_ptr<Data> Simulator::m_Model = nullptr;
+std::shared_ptr<Model> Simulator::m_Model = nullptr;
 float Simulator::m_Eps = 0.001f;
 
-void Simulator::Init(const std::shared_ptr<Data>& data)
+void Simulator::Init(const std::shared_ptr<Data>& data, const std::shared_ptr<Model>& model)
 {
 	m_Data = data;
+	m_Model = model;
+
+	// Model Initialization
+	CalcPressureDistribution();
+	CalcOriginalInPlace();
 }
 
 float Simulator::Calc(Props props, float x)
@@ -72,6 +78,71 @@ float Simulator::CalcPorosity(float x)
 	float cr = content.reservoir.crock;
 	float p0 = content.reservoir.pref;
 	return phi0 * exp(cr * (x - p0));
+}
+
+void Simulator::CalcPressureDistribution()
+{
+	// Get Coordinates and Blocks
+	auto& [nx, ny, nz] = m_Model->GetCoordinate();
+	const auto& blocks = m_Model->GetBlocks();
+	auto& setBlocks = m_Model->SetBlocks();
+
+	for (int i = 0; i < nx; i++)
+		for (int j = 0; j < ny; j++)
+			for (int k = nz - 2; k >= 0; k--)
+			{
+				// Initalize data
+				float p1 = blocks[i][j][k + 1].p;
+				float p0 = blocks[i][j][k].p;
+				float phalf = 0.5f * (p0 + p1);
+				float dz = blocks[i][j][k].dz;
+				float dno = Calc(Props::Rhoo, phalf) * dz;
+				float diff = p1 - p0 - dno;
+
+				// Loop until diff below epsilon
+				while (abs(diff) > m_Eps)
+				{
+					p0 += diff * 0.5f;
+					phalf = 0.5f * (p0 + p1);
+					dno = Calc(Props::Rhoo, phalf) * dz;
+					diff = p1 - p0 - dno;
+				}
+
+				setBlocks[i][j][k + 1].p = p1;
+			}
+}
+
+void Simulator::CalcOriginalInPlace()
+{
+	// Get Coordinates and Blocks
+	const auto& [nx, ny, nz] = m_Model->GetCoordinate();
+	const auto& blocks = m_Model->GetBlocks();
+
+	float ooip = 0.0f;
+	float ogip = 0.0f;
+
+	for (int i = 0; i < nx; i++)
+		for (int j = 0; j < ny; j++)
+			for (int k = 0; k < nz - 1; k++)
+			{
+				// Data
+				float v   = blocks[i][j][k].Volume();
+				float phi = blocks[i][j][k].Phi();
+
+				float so  = blocks[i][j][k].So();
+				float bo  = blocks[i][j][k].Bo();
+						  
+				float rs  = blocks[i][j][k].Rs();
+				float sg  = blocks[i][j][k].sg;
+				float bg  = blocks[i][j][k].Bg();
+
+				// Calc
+				ooip += v * phi * (so / bo);
+				ogip += v * phi * (sg / bg + rs * so / bo);
+			}
+
+	m_Model->SetOOIP(ooip);
+	m_Model->SetOGIP(ogip);
 }
 
 Simulator::SelectPairs Simulator::SelectTable(Props props)
