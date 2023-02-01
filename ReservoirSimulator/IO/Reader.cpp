@@ -1,5 +1,6 @@
 #include "Reader.hpp"
 #include <iostream>
+#include <stdexcept>
 
 std::string Reader::ReadLine()
 {
@@ -8,6 +9,9 @@ std::string Reader::ReadLine()
 	{
 		getline(file, line);
 	}
+	else
+		throw std::runtime_error("There is no file opened!");
+
 	return line;
 }
 

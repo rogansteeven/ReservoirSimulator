@@ -21,22 +21,25 @@ void Simulator::Init(const std::shared_ptr<Data>& data, const std::shared_ptr<Mo
 
 float Simulator::Calc(Props props, float x)
 {
-	// Specific Calculation
+	float value;
+
 	switch (props)
 	{
 	case Props::Rhoo:
-		return CalcOilDensity(x);
+		value = CalcOilDensity(x);          break;
 	case Props::Rhog:
-		return CalcGasDensity(x);
+		value = CalcGasDensity(x);          break;
 	case Props::Rhow:
-		return CalcWaterDensity(x);
+		value = CalcWaterDensity(x);        break;
 	case Props::Phi:
-		return CalcPorosity(x);
+		value = CalcPorosity(x);            break;
+	default:
+	{
+		auto [xs, ys] = SelectTable(props);
+		value = Interpolate(xs, ys, x);
+	}
 	}
 
-	// Interpolation
-	auto [xs, ys] = SelectTable(props);
-	float value = Interpolate(xs, ys, x);
 	return UnitConverter(props, value);
 }
 
@@ -108,7 +111,7 @@ void Simulator::CalcPressureDistribution()
 					diff = p1 - p0 - dno;
 				}
 
-				setBlocks[i][j][k + 1].p = p1;
+				setBlocks[i][j][k].p = p0;
 			}
 }
 

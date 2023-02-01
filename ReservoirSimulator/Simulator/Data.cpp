@@ -13,6 +13,9 @@ Data::Data(const std::string& filepath)
 	ReadRockPhysicData();
 	ReadDensityData();
 	ReadPVTData();
+	
+	// Close file
+	m_Reader.Close();
 }
 
 void Data::ReadInitialReservoirData()

@@ -23,6 +23,7 @@ public:
 
 public:
 	void Clear() { file.clear(); }
+	void Close() { file.close(); }
 
 private:
 	std::ifstream file;

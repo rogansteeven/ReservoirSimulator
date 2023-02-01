@@ -90,7 +90,7 @@ std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Model>& model)
 	const auto& ooip = model->GetOOIP();
 	const auto& ogip = model->GetOGIP();
 	os << "OOIP: " << ooip << '\n';
-	os << "OGIP: " << ogip << "\n\n";
+	os << "OGIP: " << ogip << '\n';
 
 	return os;
 }
