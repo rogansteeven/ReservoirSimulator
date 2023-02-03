@@ -7,6 +7,7 @@ class Reader
 {
 public:
 	Reader(const std::string& filepath) : file(filepath) {}
+	~Reader() { file.close(); }
 
 	std::string ReadLine();
 	void SkipUntilNot(char skip);

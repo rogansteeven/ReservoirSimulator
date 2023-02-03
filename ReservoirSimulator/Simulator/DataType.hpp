@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 struct ReservoirData
 {
 	int nx, ny, nz;   // no of grids in x- y- and z-direction
@@ -50,4 +52,16 @@ struct PVTWData
 	float cwref;         // [1/psia]
 	float viswref;       // [cp]
 	float viscosibility; // [1/psia]
+};
+
+struct TimeRate
+{
+	float time; // (days)
+	float rate; // (stb/d) +: production, -: injection
+};
+
+struct WellData
+{
+	int i, j, k; // Coordinate on a reservoir block
+	std::vector<TimeRate> timeRate;
 };

@@ -4,6 +4,8 @@
 
 #include <stdexcept>
 #include <cmath>
+#include <format>
+#include <iostream>
 
 std::shared_ptr<Data> Simulator::m_Data = nullptr;
 std::shared_ptr<Model> Simulator::m_Model = nullptr;
@@ -45,7 +47,71 @@ float Simulator::Calc(Props props, float x)
 
 float Simulator::CalcDeriv(Props props, float x)
 {
-	return (Calc(props, x) - Calc(props, x - m_Eps)) / m_Eps;
+	// Set epsilon according to props
+	float eps = m_Eps;
+	switch (props)
+	{
+	case Props::Kro:
+	case Props::Krw:
+	case Props::Pcow:
+		eps = m_Eps * 0.1f;
+	}
+	
+	return (Calc(props, x) - Calc(props, x - eps)) / eps;
+}
+
+float Simulator::CalcRate(RateType rateType, int index, float time)
+{
+	switch (rateType)
+	{
+	case RateType::Oil:
+		return OilRate(index, time);
+	case RateType::Water:
+		return WaterRate(index, time);
+	default:
+		throw std::runtime_error("Unknown rate type!");
+	}
+}
+
+float Simulator::CalcRateDeriv(RateType rateType, Props props, int index, float time)
+{
+	// Set epsilon according to props
+	float eps = m_Eps;
+	switch (props)
+	{
+	case Props::P:
+	case Props::Sw:
+		eps = m_Eps * 0.1f;
+	}
+
+	// Calc
+	switch (rateType)
+	{
+	case RateType::Oil:
+		return (OilRate(index, time) - OilRate(index, time, props)) / eps;
+	case RateType::Water:
+		return (WaterRate(index, time) - WaterRate(index, time, props)) / eps;
+	default:
+		throw std::runtime_error("Unknown rate type!");
+	}
+}
+
+float Simulator::OilRate(int index, float time, Props props)
+{
+	const Data::Content& content = m_Data->GetContent();
+	if (content.wells[index].timeRate[0].rate > 0.0f)
+		return 0.0f;
+
+	return (1.0f - FracionalW(index, props)) * Rate(index, time);
+}
+
+float Simulator::WaterRate(int index, float time, Props props)
+{
+	const Data::Content& content = m_Data->GetContent();
+	if (content.wells[index].timeRate[0].rate > 0.0f)
+		return Rate(index, time);
+
+	return FracionalW(index, props) * Rate(index, time);
 }
 
 float Simulator::CalcOilDensity(float x)
@@ -81,6 +147,53 @@ float Simulator::CalcPorosity(float x)
 	float cr = content.reservoir.crock;
 	float p0 = content.reservoir.pref;
 	return phi0 * exp(cr * (x - p0));
+}
+
+float Simulator::Rate(int index, float time)
+{
+	const Data::Content& content = m_Data->GetContent();
+
+	if (index >= content.wells.size())
+		throw std::runtime_error(std::format("Well index out of range. Please select between 0-{}!", content.wells.size()));
+
+	for (const auto& [wellTime, wellRate] : content.wells[index].timeRate)
+		if (time >= 0.0f && time <= wellTime)
+			return wellRate;
+
+	return 0.0f;
+}
+
+float Simulator::FracionalW(int index, Props props)
+{
+	const Data::Content& content = m_Data->GetContent();
+
+	if (index >= content.wells.size())
+		throw std::runtime_error(std::format("Well index out of range. Please select between 0-{}!", content.wells.size()));
+
+	int i = content.wells[index].i;
+	int j = content.wells[index].j;
+	int k = content.wells[index].k;
+
+	float p = m_Model->GetBlocks()[i][j][k].p;
+	float sw = m_Model->GetBlocks()[i][j][k].sw;
+
+	switch (props)
+	{
+	case Props::P:
+		p -= m_Eps; break;
+	case Props::Sw:
+		sw -= m_Eps * 0.1f; break;
+	default:
+		break;
+	}
+
+	float viso = Calc(Props::Viso, p);
+	float visw = Calc(Props::Visw, p);
+	float kro = Calc(Props::Kro, sw);
+	float krw = Calc(Props::Krw, sw);
+
+	float M = (visw / viso) * (kro / krw);
+	return 1.0f / (1.0f + M);
 }
 
 void Simulator::CalcPressureDistribution()

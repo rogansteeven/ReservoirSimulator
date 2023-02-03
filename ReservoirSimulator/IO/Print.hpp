@@ -19,5 +19,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<PVTWData>& pvtw);
 
 std::ostream& operator<<(std::ostream& os, const std::vector<RockPhysicData>& rockphysic);
 
+std::ostream& operator<<(std::ostream& os, const std::vector<WellData>& well);
+
 // MODEL
 std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Model>& model);

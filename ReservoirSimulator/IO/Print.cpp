@@ -7,7 +7,8 @@ std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Data>& data)
 	   << data->GetContent().density << '\n'
 	   << data->GetContent().pvto << '\n'
 	   << data->GetContent().pvtg << '\n'
-	   << data->GetContent().pvtw << '\n';
+	   << data->GetContent().pvtw << '\n'
+	   << data->GetContent().wells << '\n';
 	return os;
 }
 
@@ -71,6 +72,21 @@ std::ostream& operator<<(std::ostream& os, const std::vector<PVTWData>& pvtw)
 	os << "Pref" << " " << "Bwref" << " " << "Cwref" << " " << "Viscosity" << " " << "Viscobility\n";
 	for (const auto& entry : pvtw)
 		os << entry.pref << " " << entry.bwref << " " << entry.cwref << " " << entry.viswref << " " << entry.viscosibility << '\n';
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<WellData>& well)
+{
+	os << "No of well: " << well.size();
+	
+	for (const auto& entry : well)
+	{
+		os << "\nCoordinate: " << entry.i << ", " << entry.j << ", " << entry.k << '\n';
+
+		os << "Time" << ' ' << "Rate" << '\n';
+		for (const auto& [time, rate] : entry.timeRate)
+			os << time << ' ' << rate << '\n';
+	}
 	return os;
 }
 

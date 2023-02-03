@@ -149,10 +149,13 @@
     <ClInclude Include="Simulator\Enum.hpp" />
     <ClInclude Include="Simulator\Model.hpp" />
     <ClInclude Include="Simulator\Simulator.hpp" />
+    <ClInclude Include="Simulator\Test.hpp" />
+    <ClInclude Include="Simulator\Typedef.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\project2.txt" />
     <Text Include="Data\pvt.txt" />
+    <Text Include="Data\well_data.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

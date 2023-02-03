@@ -12,11 +12,20 @@ public:
 	static float Calc(Props props, float x);
 	static float CalcDeriv(Props props, float x);
 
+	static float CalcRate(RateType rateType, int index, float time);
+	static float CalcRateDeriv(RateType rateType, Props props, int index, float time);
+
 private:
 	static float CalcOilDensity(float x);
 	static float CalcGasDensity(float x);
 	static float CalcWaterDensity(float x);
 	static float CalcPorosity(float x);
+
+	static float OilRate(int index, float time, Props props = Props::None);
+	static float WaterRate(int index, float time, Props props = Props::None);
+
+	static float Rate(int index, float time);
+	static float FracionalW(int index, Props props);
 
 private:
 	static void CalcPressureDistribution();

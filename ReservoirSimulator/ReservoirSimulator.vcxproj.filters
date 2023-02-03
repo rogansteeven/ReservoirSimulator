@@ -65,9 +65,16 @@
     <ClInclude Include="Simulator\Block.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Simulator\Typedef.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulator\Test.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\pvt.txt" />
     <Text Include="Data\project2.txt" />
+    <Text Include="Data\well_data.txt" />
   </ItemGroup>
 </Project>
