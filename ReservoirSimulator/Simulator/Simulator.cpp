@@ -79,7 +79,7 @@ float Simulator::CalcRateDeriv(RateType rateType, Props props, int index, float 
 float Simulator::OilRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
-	if (content.wells[index].timeRate[0].rate > 0.0f)
+	if (content.wells[index].timeRate[0].rate > 0.0f) // If rate is positive, it is an injection well
 		return 0.0f;
 
 	return (1.0f - FracionalW(index, props)) * Rate(index, time);
@@ -88,7 +88,7 @@ float Simulator::OilRate(int index, float time, Props props)
 float Simulator::WaterRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
-	if (content.wells[index].timeRate[0].rate > 0.0f)
+	if (content.wells[index].timeRate[0].rate > 0.0f) // If rate is positive, it is an injection well
 		return Rate(index, time);
 
 	return FracionalW(index, props) * Rate(index, time);
