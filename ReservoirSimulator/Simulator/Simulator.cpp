@@ -9,7 +9,6 @@
 
 std::shared_ptr<Data> Simulator::m_Data = nullptr;
 std::shared_ptr<Model> Simulator::m_Model = nullptr;
-float Simulator::m_Eps = 0.001f;
 
 void Simulator::Init(const std::shared_ptr<Data>& data, const std::shared_ptr<Model>& model)
 {
@@ -46,18 +45,8 @@ float Simulator::Calc(Props props, float x)
 }
 
 float Simulator::CalcDeriv(Props props, float x)
-{
-	// Set epsilon according to props
-	float eps = m_Eps;
-	switch (props)
-	{
-	case Props::Kro:
-	case Props::Krw:
-	case Props::Pcow:
-		eps = m_Eps * 0.1f;
-	}
-	
-	return (Calc(props, x) - Calc(props, x - eps)) / eps;
+{	
+	return (Calc(props, x) - Calc(props, x - Eps(props))) / Eps(props);
 }
 
 float Simulator::CalcRate(RateType rateType, int index, float time)
@@ -75,22 +64,13 @@ float Simulator::CalcRate(RateType rateType, int index, float time)
 
 float Simulator::CalcRateDeriv(RateType rateType, Props props, int index, float time)
 {
-	// Set epsilon according to props
-	float eps = m_Eps;
-	switch (props)
-	{
-	case Props::P:
-	case Props::Sw:
-		eps = m_Eps * 0.1f;
-	}
-
 	// Calc
 	switch (rateType)
 	{
 	case RateType::Oil:
-		return (OilRate(index, time) - OilRate(index, time, props)) / eps;
+		return (OilRate(index, time) - OilRate(index, time, props)) / Eps(props);
 	case RateType::Water:
-		return (WaterRate(index, time) - WaterRate(index, time, props)) / eps;
+		return (WaterRate(index, time) - WaterRate(index, time, props)) / Eps(props);
 	default:
 		throw std::runtime_error("Unknown rate type!");
 	}
@@ -174,18 +154,8 @@ float Simulator::FracionalW(int index, Props props)
 	int j = content.wells[index].j;
 	int k = content.wells[index].k;
 
-	float p = m_Model->GetBlocks()[i][j][k].p;
-	float sw = m_Model->GetBlocks()[i][j][k].sw;
-
-	switch (props)
-	{
-	case Props::P:
-		p -= m_Eps; break;
-	case Props::Sw:
-		sw -= m_Eps * 0.1f; break;
-	default:
-		break;
-	}
+	float p = m_Model->GetBlocks()[i][j][k].p - Eps(props);
+	float sw = m_Model->GetBlocks()[i][j][k].sw - Eps(props);
 
 	float viso = Calc(Props::Viso, p);
 	float visw = Calc(Props::Visw, p);
@@ -216,7 +186,7 @@ void Simulator::CalcPressureDistribution()
 				float diff = p1 - p0 - dno;
 
 				// Loop until diff below epsilon
-				while (abs(diff) > m_Eps)
+				while (abs(diff) > Eps())
 				{
 					p0 += diff * 0.5f;
 					phalf = 0.5f * (p0 + p1);
@@ -381,4 +351,21 @@ float Simulator::UnitConverter(Props props, float value)
 	default:
 		return value;
 	}
+}
+
+constexpr float Simulator::Eps(Props props)
+{
+	float eps = Eps();
+	switch (props)
+	{
+	case Props::None:
+		eps = 0.0f; break;
+
+	case Props::Kro:
+	case Props::Krw:
+	case Props::Pcow:
+	case Props::Sw:
+		eps = Eps() * 0.1f; break;
+	}
+	return eps;
 }

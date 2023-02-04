@@ -138,6 +138,7 @@
     <ClCompile Include="Simulator\Data.cpp" />
     <ClCompile Include="Simulator\Model.cpp" />
     <ClCompile Include="Simulator\Simulator.cpp" />
+    <ClCompile Include="Simulator\Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Functions\Interpolate.hpp" />

@@ -36,8 +36,10 @@ private:
 	static SelectPairs SelectTable(Props props);
 	static float UnitConverter(Props props, float value);
 
+	static constexpr float Eps() { return 0.001f; }
+	static constexpr float Eps(Props props);
+
 private:
 	static std::shared_ptr<Data> m_Data;
 	static std::shared_ptr<Model> m_Model;
-	static float m_Eps;
 };
