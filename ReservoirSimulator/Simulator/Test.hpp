@@ -10,4 +10,5 @@ namespace Test
 	void Rate1();
 	void Calc1();
 	void Poten1();
+	void Project5Problem();
 }

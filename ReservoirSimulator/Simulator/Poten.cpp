@@ -5,9 +5,9 @@ const bool Poten::IsPoten(PotenDir potenDir) const
 	return (poten & Bits(potenDir));
 }
 
-void Poten::SetPoten(PotenDir potenDir, bool isFlowing)
+void Poten::SetPoten(PotenDir potenDir, bool isPoten)
 {
-	if (isFlowing)
+	if (isPoten)
 		poten |= Bits(potenDir);
 	else
 		poten &= ~Bits(potenDir);

@@ -81,7 +81,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<WellData>& well)
 	
 	for (const auto& entry : well)
 	{
-		os << "\nCoordinate: " << entry.i << ", " << entry.j << ", " << entry.k << '\n';
+		os << "\nBlockSize: " << entry.i << ", " << entry.j << ", " << entry.k << '\n';
 
 		os << "Time" << ' ' << "Rate" << '\n';
 		for (const auto& [time, rate] : entry.timeRate)
@@ -93,7 +93,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<WellData>& well)
 std::ostream& operator<<(std::ostream& os, const std::shared_ptr<Model>& model)
 {
 	// Print grids
-	const auto& [nx, ny, nz] = model->GetCoordinate();
+	const auto& [nx, ny, nz] = model->GetBlockSize();
 	os << "nx" << " " << "ny" << " " << "nz\n";
 	os << nx << " " << ny << " " << nz << "\n\n";
 

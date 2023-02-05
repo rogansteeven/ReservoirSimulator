@@ -11,7 +11,7 @@ public:
 	using Block3D = std::vector<Block2D>;
 
 public:
-	struct Coordinate { int nx, ny, nz; };
+	struct BlockSize { int nx, ny, nz; };
 	struct Dimension { float tx, ty, tz; };
 
 public:
@@ -19,7 +19,7 @@ public:
 
 	void InitializeBlocks(const std::shared_ptr<Data>& data);
 
-	const Coordinate GetCoordinate() const { return { m_Nx, m_Ny, m_Nz }; }
+	const BlockSize GetBlockSize() const { return { m_Nx, m_Ny, m_Nz }; }
 	const Dimension  GetDimension()  const { return { m_Tx, m_Ty, m_Tz }; }
 
 	const Block3D& GetBlocks() const { return m_Blocks; }

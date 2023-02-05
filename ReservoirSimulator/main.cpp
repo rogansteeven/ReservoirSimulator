@@ -19,7 +19,8 @@ int main()
 	Simulator::Init(data, model);
 
 	//Test::Data1(data);
-	Test::Poten1();
+	//Test::Poten1();
 	//Test::Calc1();
 	//Test::Model1(model);
+	Test::Project5Problem();
 }

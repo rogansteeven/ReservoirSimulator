@@ -9,15 +9,21 @@ class Simulator
 public:
 	static void Init(const std::shared_ptr<Data>& data, const std::shared_ptr<Model>& model);
 
+	// --- CALCULATION --- //
 	static float Calc(Props props, float x);
 	static float CalcDeriv(Props props, float x);
 
 	static float CalcRate(RateType rateType, int index, float time);
 	static float CalcRateDeriv(RateType rateType, Props props, int index, float time);
 
+	// --- BLOCK --- //
+	static Model::BlockSize GetBlockSize() { return m_Model->GetBlockSize(); }
+
+	static void CalcPotentialFlowDistribution();
 	static bool IsBlockPoten(int i, int j, int k, PotenDir potenDir);
 	static unsigned char BlockPoten(int i, int j, int k);
 
+	static float GetBlockPressure(int i, int j, int k);
 	static void SetBlockPressure(int i, int j, int k, float p);
 
 private:
@@ -36,7 +42,6 @@ private:
 	static void CalcPressureDistribution();
 	static void CalcOriginalInPlace();
 
-	static void CalcPotentialFlowDistribution();
 	static void CalcPotentialFlow(Block& currBlock, Block& neighBlock, PotenDir potenDir);
 
 private:

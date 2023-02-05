@@ -57,4 +57,78 @@ namespace Test
 		std::cout << "Has Block[1][2][3] a potential of oil flow to bottom? " << Simulator::IsBlockPoten(1, 2, 3, PotenDir::bottomO) << std::endl;
 		std::cout << "Block[1][2][3] potential: " << std::bitset<8>(Simulator::BlockPoten(1, 2, 3)) << std::endl;
 	}
+
+	void Project5Problem()
+	{
+		const auto& [nx, ny, nz] = Simulator::GetBlockSize();
+		float p;
+
+#define INTMOD2(x) (int)((x+1) % 2 == 0)
+
+		for (int i = 0;i < nx;i++)
+			for (int j = 0; j < ny; j++)
+				for (int k = 0; k < nz; k++)
+				{
+					if (int c; c = INTMOD2(i) + INTMOD2(j) + INTMOD2(k))
+					{
+						p = Simulator::GetBlockPressure(i, j, k);
+						Simulator::SetBlockPressure(i, j, k, p + c * 10);
+					}
+				}
+
+		Simulator::CalcPotentialFlowDistribution();
+
+		int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
+		for (int i = 0; i < nx; i++)
+			for (int j = 0; j < ny; j++)
+				for (int k = 0; k < nz; k++)
+				{
+					n1 += (int)Simulator::IsBlockPoten(i, j, k, PotenDir::leftW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::rightW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::frontW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::backW);
+
+					n2 += (int)Simulator::IsBlockPoten(i, j, k, PotenDir::topW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::topO)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::bottomW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::bottomO);
+
+					n3 += (int)Simulator::IsBlockPoten(i, j, k, PotenDir::leftW)
+						* (int)Simulator::IsBlockPoten(i, j, k, PotenDir::topW)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::rightW)
+						* (int)Simulator::IsBlockPoten(i, j, k, PotenDir::bottomW);
+
+					n4 += (int)Simulator::IsBlockPoten(i, j, k, PotenDir::backW)
+						* (int)Simulator::IsBlockPoten(i, j, k, PotenDir::bottomO)
+						+ (int)Simulator::IsBlockPoten(i, j, k, PotenDir::frontW)
+						* (int)Simulator::IsBlockPoten(i, j, k, PotenDir::topO);
+				}
+
+		std::cout << "n1 = " << n1 << '\n';
+		std::cout << "n2 = " << n2 << '\n';
+		std::cout << "n3 = " << n3 << '\n';
+		std::cout << "n4 = " << n4 << "\n\n";
+
+		std::cout << "ibw(1, 2, 3) = " << Simulator::IsBlockPoten(1 - 1, 2 - 1, 3 - 1, PotenDir::leftW) << '\n';
+		std::cout << "icw(2, 3, 4) = " << Simulator::IsBlockPoten(2 - 1, 3 - 1, 4 - 1, PotenDir::rightW) << '\n';
+		std::cout << "idw(4, 3, 2) = " << Simulator::IsBlockPoten(4 - 1, 3 - 1, 2 - 1, PotenDir::backW) << '\n';
+		std::cout << "iew(3, 2, 1) = " << Simulator::IsBlockPoten(3 - 1, 2 - 1, 1 - 1, PotenDir::frontW) << '\n';
+		std::cout << "ifw(5, 1, 5) = " << Simulator::IsBlockPoten(5 - 1, 1 - 1, 5 - 1, PotenDir::topW) << '\n';
+		std::cout << "igw(4, 2, 4) = " << Simulator::IsBlockPoten(4 - 1, 2 - 1, 4 - 1, PotenDir::bottomW) << '\n';
+		std::cout << "ifw(3, 3, 3) = " << Simulator::IsBlockPoten(3 - 1, 3 - 1, 3 - 1, PotenDir::topW) << '\n';
+		std::cout << "igw(2, 2, 2) = " << Simulator::IsBlockPoten(2 - 1, 2 - 1, 2 - 1, PotenDir::bottomW) << "\n\n";
+
+		for (int k = 0; k < nz; k++)
+		{
+			std::cout << "k" << k + 1 << "\n";
+			for (int j = 0; j < ny; j++)
+			{
+				std::cout << "j" << j + 1 << " ";
+				for (int i = 0; i < nx; i++)
+					std::cout << Simulator::GetBlockPressure(i, j, k) << " ";
+				std::cout << '\n';
+			}
+			std::cout << "\n";
+		}
+	}
 }

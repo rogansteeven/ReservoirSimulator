@@ -88,6 +88,12 @@ unsigned char Simulator::BlockPoten(int i, int j, int k)
 	return m_Model->GetBlocks()[i][j][k].poten.poten;
 }
 
+float Simulator::GetBlockPressure(int i, int j, int k)
+{
+	const auto& block = m_Model->GetBlocks();
+	return block[i][j][k].p;
+}
+
 void Simulator::SetBlockPressure(int i, int j, int k, float p)
 {
 	auto& blocks = m_Model->SetBlocks();
@@ -186,8 +192,8 @@ float Simulator::CalcFractionalW(int index, Props props)
 
 void Simulator::CalcPressureDistribution()
 {
-	// Get Coordinates and Blocks
-	auto& [nx, ny, nz] = m_Model->GetCoordinate();
+	// Get BlockSizes and Blocks
+	auto& [nx, ny, nz] = m_Model->GetBlockSize();
 	const auto& blocks = m_Model->GetBlocks();
 	auto& setBlocks = m_Model->SetBlocks();
 
@@ -218,8 +224,8 @@ void Simulator::CalcPressureDistribution()
 
 void Simulator::CalcOriginalInPlace()
 {
-	// Get Coordinates and Blocks
-	const auto& [nx, ny, nz] = m_Model->GetCoordinate();
+	// Get BlockSizes and Blocks
+	const auto& [nx, ny, nz] = m_Model->GetBlockSize();
 	const auto& blocks = m_Model->GetBlocks();
 
 	float ooip = 0.0f;
@@ -294,7 +300,7 @@ void Simulator::CalcPotentialFlow(Block& currBlock, Block& neighBlock, PotenDir 
 	float pNeigh = neighBlock.p;
 	float pHalf = 0.5f * (pCurr + pNeigh);
 	float dz = currBlock.dz;
-	float poten = pCurr - pNeigh;
+	float poten = pNeigh - pCurr;
 	
 	switch (potenDir)
 	{
