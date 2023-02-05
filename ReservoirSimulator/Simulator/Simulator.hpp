@@ -15,21 +15,29 @@ public:
 	static float CalcRate(RateType rateType, int index, float time);
 	static float CalcRateDeriv(RateType rateType, Props props, int index, float time);
 
+	static bool IsBlockPoten(int i, int j, int k, PotenDir potenDir);
+	static unsigned char BlockPoten(int i, int j, int k);
+
+	static void SetBlockPressure(int i, int j, int k, float p);
+
 private:
 	static float CalcOilDensity(float x);
 	static float CalcGasDensity(float x);
 	static float CalcWaterDensity(float x);
 	static float CalcPorosity(float x);
 
-	static float OilRate(int index, float time, Props props = Props::None);
-	static float WaterRate(int index, float time, Props props = Props::None);
+	static float CalcOilRate(int index, float time, Props props = Props::None);
+	static float CalcWaterRate(int index, float time, Props props = Props::None);
 
-	static float Rate(int index, float time);
-	static float FracionalW(int index, Props props);
+	static float CalcRate(int index, float time);
+	static float CalcFractionalW(int index, Props props);
 
 private:
 	static void CalcPressureDistribution();
 	static void CalcOriginalInPlace();
+
+	static void CalcPotentialFlowDistribution();
+	static void CalcPotentialFlow(Block& currBlock, Block& neighBlock, PotenDir potenDir);
 
 private:
 	using SelectPairs = std::pair< std::vector<float>, std::vector<float> >;

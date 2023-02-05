@@ -21,3 +21,9 @@ enum class RateType
 {
 	Oil = 0, Water
 };
+
+enum class PotenDir
+{
+	topW = 0, bottomW, frontW, backW, leftW, rightW,
+	topO, bottomO
+};

@@ -137,6 +137,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Simulator\Data.cpp" />
     <ClCompile Include="Simulator\Model.cpp" />
+    <ClCompile Include="Simulator\Poten.cpp" />
     <ClCompile Include="Simulator\Simulator.cpp" />
     <ClCompile Include="Simulator\Test.cpp" />
   </ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="Simulator\DataType.hpp" />
     <ClInclude Include="Simulator\Enum.hpp" />
     <ClInclude Include="Simulator\Model.hpp" />
+    <ClInclude Include="Simulator\Poten.hpp" />
     <ClInclude Include="Simulator\Simulator.hpp" />
     <ClInclude Include="Simulator\Test.hpp" />
     <ClInclude Include="Simulator\Typedef.hpp" />

@@ -4,6 +4,8 @@
 #include "Simulator.hpp"
 #include "../IO/Print.hpp"
 
+#include <bitset>
+
 namespace Test
 {
 	void Data1(const std::shared_ptr<Data>& data)
@@ -40,13 +42,19 @@ namespace Test
 		std::cout << "Calc Rs [1300]: " << Simulator::Calc(Props::Rs, 1300) << std::endl;
 		std::cout << "Calc dRs [1300]: " << Simulator::CalcDeriv(Props::Rs, 1300) << std::endl;
 
-		std::cout << "Calc Viso [1300]: " << Simulator::Calc(Props::Viso, 1300) << std::endl;
-		std::cout << "Calc dViso [1300]: " << Simulator::CalcDeriv(Props::Viso, 1300) << std::endl;
+		std::cout << "Calc Rhoo [2080]: " << Simulator::Calc(Props::Rhoo, 2080) << std::endl;
+		std::cout << "Calc dRhoo [2080]: " << Simulator::CalcDeriv(Props::Rhoo, 2080) << std::endl;
 
 		std::cout << "Calc Kro [0.85]: " << Simulator::Calc(Props::Kro, 0.85f) << std::endl;
 		std::cout << "Calc dKro [0.85]: " << Simulator::CalcDeriv(Props::Kro, 0.85f) << std::endl;
 
 		std::cout << "Calc Krw [0.85]: " << Simulator::Calc(Props::Krw, 0.85f) << std::endl;
 		std::cout << "Calc dKrw [0.85]: " << Simulator::CalcDeriv(Props::Krw, 0.85f) << std::endl;
+	}
+
+	void Poten1()
+	{
+		std::cout << "Has Block[1][2][3] a potential of oil flow to bottom? " << Simulator::IsBlockPoten(1, 2, 3, PotenDir::bottomO) << std::endl;
+		std::cout << "Block[1][2][3] potential: " << std::bitset<8>(Simulator::BlockPoten(1, 2, 3)) << std::endl;
 	}
 }

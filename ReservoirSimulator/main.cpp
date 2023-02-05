@@ -18,5 +18,8 @@ int main()
 	auto model = Model::Create(data);
 	Simulator::Init(data, model);
 
-	Test::Data1(data);
+	//Test::Data1(data);
+	Test::Poten1();
+	//Test::Calc1();
+	//Test::Model1(model);
 }

@@ -1,6 +1,6 @@
 #include "Simulator.hpp"
-#include "../Functions/Interpolate.hpp"
 #include "Block.hpp"
+#include "../Functions/Interpolate.hpp"
 
 #include <stdexcept>
 #include <cmath>
@@ -18,6 +18,7 @@ void Simulator::Init(const std::shared_ptr<Data>& data, const std::shared_ptr<Mo
 	// Model Initialization
 	CalcPressureDistribution();
 	CalcOriginalInPlace();
+	CalcPotentialFlowDistribution();
 }
 
 float Simulator::Calc(Props props, float x)
@@ -54,9 +55,9 @@ float Simulator::CalcRate(RateType rateType, int index, float time)
 	switch (rateType)
 	{
 	case RateType::Oil:
-		return OilRate(index, time);
+		return CalcOilRate(index, time);
 	case RateType::Water:
-		return WaterRate(index, time);
+		return CalcWaterRate(index, time);
 	default:
 		throw std::runtime_error("Unknown rate type!");
 	}
@@ -68,30 +69,47 @@ float Simulator::CalcRateDeriv(RateType rateType, Props props, int index, float 
 	switch (rateType)
 	{
 	case RateType::Oil:
-		return (OilRate(index, time) - OilRate(index, time, props)) / Eps(props);
+		return (CalcOilRate(index, time) - CalcOilRate(index, time, props)) / Eps(props);
 	case RateType::Water:
-		return (WaterRate(index, time) - WaterRate(index, time, props)) / Eps(props);
+		return (CalcWaterRate(index, time) - CalcWaterRate(index, time, props)) / Eps(props);
 	default:
 		throw std::runtime_error("Unknown rate type!");
 	}
 }
 
-float Simulator::OilRate(int index, float time, Props props)
+bool Simulator::IsBlockPoten(int i, int j, int k, PotenDir potenDir)
+{
+	const auto& blocks = m_Model->GetBlocks();
+	return blocks[i][j][k].poten.IsPoten(potenDir);
+}
+
+unsigned char Simulator::BlockPoten(int i, int j, int k)
+{
+	return m_Model->GetBlocks()[i][j][k].poten.poten;
+}
+
+void Simulator::SetBlockPressure(int i, int j, int k, float p)
+{
+	auto& blocks = m_Model->SetBlocks();
+	blocks[i][j][k].p = p;
+}
+
+float Simulator::CalcOilRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
 	if (content.wells[index].timeRate[0].rate > 0.0f)
 		return 0.0f;
 
-	return (1.0f - FracionalW(index, props)) * Rate(index, time);
+	return (1.0f - CalcFractionalW(index, props)) * CalcRate(index, time);
 }
 
-float Simulator::WaterRate(int index, float time, Props props)
+float Simulator::CalcWaterRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
 	if (content.wells[index].timeRate[0].rate > 0.0f)
-		return Rate(index, time);
+		return CalcRate(index, time);
 
-	return FracionalW(index, props) * Rate(index, time);
+	return CalcFractionalW(index, props) * CalcRate(index, time);
 }
 
 float Simulator::CalcOilDensity(float x)
@@ -129,7 +147,7 @@ float Simulator::CalcPorosity(float x)
 	return phi0 * exp(cr * (x - p0));
 }
 
-float Simulator::Rate(int index, float time)
+float Simulator::CalcRate(int index, float time)
 {
 	const Data::Content& content = m_Data->GetContent();
 
@@ -143,7 +161,7 @@ float Simulator::Rate(int index, float time)
 	return 0.0f;
 }
 
-float Simulator::FracionalW(int index, Props props)
+float Simulator::CalcFractionalW(int index, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
 
@@ -229,6 +247,71 @@ void Simulator::CalcOriginalInPlace()
 
 	m_Model->SetOOIP(ooip);
 	m_Model->SetOGIP(ogip);
+}
+
+void Simulator::CalcPotentialFlowDistribution()
+{
+	const Data::Content& content = m_Data->GetContent();
+	auto& blocks = m_Model->SetBlocks();
+
+	int nx = content.reservoir.nx;
+	int ny = content.reservoir.ny;
+	int nz = content.reservoir.nz;
+
+	for (int i = 0;i < nx;i++)
+		for (int j = 0; j < ny; j++)
+			for (int k = 0; k < nz; k++)
+			{
+				if (k > 1)
+				{
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j][k - 1], PotenDir::topW);
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j][k - 1], PotenDir::topO);
+				}
+
+				if (k < nz - 1)
+				{
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j][k + 1], PotenDir::bottomW);
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j][k + 1], PotenDir::bottomO);
+				}
+
+				if (j > 1)
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j - 1][k], PotenDir::frontW);
+
+				if (j < ny - 1)
+					CalcPotentialFlow(blocks[i][j][k], blocks[i][j + 1][k], PotenDir::backW);
+
+				if (i > 1)
+					CalcPotentialFlow(blocks[i][j][k], blocks[i - 1][j][k], PotenDir::leftW);
+
+				if (i < nx - 1)
+					CalcPotentialFlow(blocks[i][j][k], blocks[i + 1][j][k], PotenDir::rightW);
+			}
+}
+
+void Simulator::CalcPotentialFlow(Block& currBlock, Block& neighBlock, PotenDir potenDir)
+{
+	float pCurr = currBlock.p;
+	float pNeigh = neighBlock.p;
+	float pHalf = 0.5f * (pCurr + pNeigh);
+	float dz = currBlock.dz;
+	float poten = pCurr - pNeigh;
+	
+	switch (potenDir)
+	{
+	case PotenDir::topW:
+		poten -= Calc(Props::Rhow, pHalf) * dz; break;
+	case PotenDir::topO:
+		poten -= Calc(Props::Rhoo, pHalf) * dz; break;
+	case PotenDir::bottomW:
+		poten += Calc(Props::Rhow, pHalf) * dz; break;
+	case PotenDir::bottomO:
+		poten += Calc(Props::Rhoo, pHalf) * dz; break;
+	}
+
+	if (poten > 0.0f)
+		currBlock.poten.SetPoten(potenDir, true);
+	else
+		currBlock.poten.SetPoten(potenDir, false);
 }
 
 Simulator::SelectPairs Simulator::SelectTable(Props props)
@@ -343,11 +426,11 @@ float Simulator::UnitConverter(Props props, float value)
 	case Props::Bg:
 		return 5.6146f * value;
 	case Props::Rhoo:
-		return 6.95e-3f * value;
+		return 6.95e-3f * value; // lb/cuft -> psi/ft
 	case Props::Rhog:
-		return 6.95e-3f * value;
+		return 6.95e-3f * value; // lb/cuft -> psi/ft
 	case Props::Rhow:
-		return 6.95e-3f * value;
+		return 6.95e-3f * value; // lb/cuft -> psi/ft
 	default:
 		return value;
 	}

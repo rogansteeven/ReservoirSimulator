@@ -9,4 +9,5 @@ namespace Test
 	void Model1(const std::shared_ptr<Model>& model);
 	void Rate1();
 	void Calc1();
+	void Poten1();
 }
