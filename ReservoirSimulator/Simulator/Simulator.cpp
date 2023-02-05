@@ -97,7 +97,7 @@ void Simulator::SetBlockPressure(int i, int j, int k, float p)
 float Simulator::CalcOilRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
-	if (content.wells[index].timeRate[0].rate > 0.0f)
+	if (content.wells[index].timeRate[0].rate > 0.0f) // If rate is positive, it is an injection well
 		return 0.0f;
 
 	return (1.0f - CalcFractionalW(index, props)) * CalcRate(index, time);
@@ -106,7 +106,7 @@ float Simulator::CalcOilRate(int index, float time, Props props)
 float Simulator::CalcWaterRate(int index, float time, Props props)
 {
 	const Data::Content& content = m_Data->GetContent();
-	if (content.wells[index].timeRate[0].rate > 0.0f)
+	if (content.wells[index].timeRate[0].rate > 0.0f) // If rate is positive, it is an injection well
 		return CalcRate(index, time);
 
 	return CalcFractionalW(index, props) * CalcRate(index, time);
